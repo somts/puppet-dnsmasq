@@ -1,4 +1,7 @@
-### MASTER
+### 2.6.2
+
+*note*: This is a modified version of lex-dnsmasq#bc1a6b1afddf9c5bbda912153c3bc709d9781b18
+It is working with Puppet 4 and is tagged for convenience.
 
 This is API breaking update! Please consult readme & adjust your configs!
 

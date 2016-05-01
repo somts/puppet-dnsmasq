@@ -1,5 +1,8 @@
 ### DESCRIPTION
 
+**note by @dsbaars**: This is a modified version of [lex-dnsmasq#bc1a6b1 ](https://github.com/rlex/puppet-dnsmasq/commit/bc1a6b1afddf9c5bbda912153c3bc709d9781b18)<br>
+It is **working with Puppet** 4 and is tagged for convenience.
+
 I wrote this module in need of managing bunch of servers running dnsmasq.
 
 It features some advanced features like:
@@ -17,12 +20,12 @@ It features some advanced features like:
 
 ### DEPENDENCIES
 
-* puppet >= 2.6
+* puppet >= 3.8
 * puppetlabs/concat >= 1.0.0
-* puppetlabs/stdlib
+* puppetlabs/stdlib >= 3.2.0
 
 ### BUILD STATUS
-[![Build Status](https://travis-ci.org/rlex/puppet-dnsmasq.svg?branch=master)](https://travis-ci.org/rlex/puppet-dnsmasq)
+[![Build Status](https://travis-ci.org/dsbaars/puppet-dnsmasq.svg?branch=master)](https://travis-ci.org/dsbaars/puppet-dnsmasq)
 
 ### Basic class
 

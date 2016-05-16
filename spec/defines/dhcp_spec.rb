@@ -8,12 +8,6 @@ describe 'dnsmasq::dhcp', :type => 'define' do
     :operatingsystem => 'Debian'
   } end
 
-  context 'with no params' do
-    it 'should raise error due no params' do
-      expect { should compile }.to raise_error(Puppet::Error,/Must pass/)
-    end
-  end
-
   context 'with params' do
     let :params do {
       :dhcp_start => '1.2.3.128',

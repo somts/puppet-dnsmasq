@@ -82,9 +82,14 @@ class dnsmasq (
 
   # Allow custom ::provider fact to override our provider, but only
   # if it is undef.
-  $provider_real = empty($::provider) ? {
+  $custom_provider = defined('$::provider') ? {
+    true  => $::provider,
+    false => undef
+  }
+
+  $provider_real = empty($custom_provider) ? {
     true    => $dnsmasq_package_provider ? {
-      undef   => $::provider,
+      undef   => $custom_provider,
       default => $dnsmasq_package_provider,
     },
     default => $dnsmasq_package_provider,

@@ -1,12 +1,10 @@
 source "https://rubygems.org"
 
-# puppet
-puppet_version = ENV.key?('PUPPET_VERSION') ? "= #{ENV['PUPPET_VERSION']}" : \
-  '= 4.3.1' # from puppet enterprise 3.7.0
-
-gem 'rake'
-gem 'rspec', '< 3.0.0'
-gem 'puppet-lint'
-gem 'rspec-puppet'
-gem 'puppetlabs_spec_helper'
-gem 'puppet', puppet_version
+group :development, :test do
+  gem 'rake'
+  gem 'rspec'
+  gem 'puppetlabs_spec_helper'
+  gem 'puppet-lint'
+  gem 'rspec-puppet'
+  gem "puppet", ENV['PUPPET_GEM_VERSION'] || '~> 4.2.0'
+end

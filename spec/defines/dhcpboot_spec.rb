@@ -8,12 +8,6 @@ describe 'dnsmasq::dhcpboot', :type => 'define' do
     :operatingsystem => 'Debian'
   } end
 
-  context 'with no params' do
-    it 'should raise error due no params' do
-      expect { should compile }.to raise_error(Puppet::Error,/Must pass/)
-    end
-  end
-
   context 'with minimal params' do
     let :params do {
       :file => '/foo',
@@ -21,7 +15,7 @@ describe 'dnsmasq::dhcpboot', :type => 'define' do
     it do
       should contain_class('dnsmasq')
       should contain_concat__fragment('dnsmasq-dhcpboot-foo').with(
-        :order   => '03',
+        :order   => '04',
         :target  => 'dnsmasq.conf',
         :content => "dhcp-boot=/foo\n",
       )
@@ -38,7 +32,7 @@ describe 'dnsmasq::dhcpboot', :type => 'define' do
     it do
       should contain_class('dnsmasq')
       should contain_concat__fragment('dnsmasq-dhcpboot-foo').with(
-        :order   => '03',
+        :order   => '04',
         :target  => 'dnsmasq.conf',
         :content => "dhcp-boot=tag:bar,/foo,example.com,192.168.0.4\n",
       )

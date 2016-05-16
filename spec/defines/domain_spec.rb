@@ -12,7 +12,7 @@ describe 'dnsmasq::domain', :type => 'define' do
     it do
       should contain_class('dnsmasq')
       should contain_concat__fragment('dnsmasq-domain-example.com').with(
-        :order   => '05',
+        :order   => '06',
         :target  => 'dnsmasq.conf',
         :content => "domain=example.com\n",
       )
@@ -27,7 +27,7 @@ describe 'dnsmasq::domain', :type => 'define' do
     it do
       should contain_class('dnsmasq')
       should contain_concat__fragment('dnsmasq-domain-example.com').with(
-        :order   => '05',
+        :order   => '06',
         :target  => 'dnsmasq.conf',
         :content => "domain=example.com,192.168.0.0/24,local\n",
       )

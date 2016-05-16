@@ -19,8 +19,9 @@ describe 'dnsmasq', :type => 'class' do
   end
 
   shared_context 'unsupported' do
-    it { expect { should compile }.to raise_error(
-      Puppet::Error, /Module dnsmasq is not supported on/) }
+    it { 
+      is_expected.to raise_error(Puppet::Error, /Module dnsmasq is not supported on/)
+    }
   end
 
   basefacts = { :concat_basedir => '/foo/bar/baz' }

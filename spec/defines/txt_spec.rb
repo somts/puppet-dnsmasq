@@ -8,18 +8,12 @@ describe 'dnsmasq::txt', :type => 'define' do
     :operatingsystem => 'Debian'
   } end
 
-  context 'with no params' do
-    it 'should raise error due no params' do
-      expect { should compile }.to raise_error(Puppet::Error,/Must pass/)
-    end
-  end
-
   context 'with one value' do
     let :params do { :value => 'bar' } end
     it do
       should contain_class('dnsmasq')
       should contain_concat__fragment('dnsmasq-txt-foo').with(
-        :order   => '10',
+        :order   => '11',
         :target  => 'dnsmasq.conf',
         :content => "txt-record=foo,bar\n",
       )
@@ -31,7 +25,7 @@ describe 'dnsmasq::txt', :type => 'define' do
     it do
       should contain_class('dnsmasq')
       should contain_concat__fragment('dnsmasq-txt-foo').with(
-        :order   => '10',
+        :order   => '11',
         :target  => 'dnsmasq.conf',
         :content => "txt-record=foo,bar,baz\n",
       )

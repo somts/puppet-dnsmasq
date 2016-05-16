@@ -8,18 +8,12 @@ describe 'dnsmasq::ptr', :type => 'define' do
     :operatingsystem => 'Debian'
   } end
 
-  context 'with no params' do
-    it 'should raise error due no params' do
-      expect { should compile }.to raise_error(Puppet::Error,/Must pass/)
-    end
-  end
-
   context 'with value' do
     let :params do { :value => 'example.com' } end
     it do
       should contain_class('dnsmasq')
       should contain_concat__fragment('dnsmasq-ptr-foo.com').with(
-        :order   => '09',
+        :order   => '10',
         :target  => 'dnsmasq.conf',
         :content => "ptr-record=foo.com,example.com\n",
       )

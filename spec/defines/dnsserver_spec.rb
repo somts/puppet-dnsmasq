@@ -8,18 +8,12 @@ describe 'dnsmasq::dnsserver', :type => 'define' do
     :operatingsystem => 'Debian'
   } end
 
-  context 'with no params' do
-    it 'should raise error due no params' do
-      expect { should compile }.to raise_error(Puppet::Error,/Must pass/)
-    end
-  end
-
   context 'with minimal params' do
     let :params do { :ip => '192.168.0.4' } end
     it do
       should contain_class('dnsmasq')
       should contain_concat__fragment('dnsmasq-dnsserver-foo').with(
-        :order   => '12',
+        :order   => '13',
         :target  => 'dnsmasq.conf',
         :content => "server=192.168.0.4\n",
       )
@@ -34,7 +28,7 @@ describe 'dnsmasq::dnsserver', :type => 'define' do
     it do
       should contain_class('dnsmasq')
       should contain_concat__fragment('dnsmasq-dnsserver-foo').with(
-        :order   => '12',
+        :order   => '13',
         :target  => 'dnsmasq.conf',
         :content => "server=/example.com/192.168.0.4\n",
       )

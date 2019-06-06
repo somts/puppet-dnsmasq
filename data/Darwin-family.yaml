@@ -1,0 +1,7 @@
+---
+dnsmasq::dnsmasq_conf_dir: '/opt/local/etc/dnsmasq.d'
+dnsmasq::dnsmasq_conf_file: '/opt/local/etc/dnsmasq.conf'
+dnsmasq::dnsmasq_logdir: '/opt/local/var/log/dnsmasq'
+dnsmasq::package_provider: 'macports'
+dnsmasq::service_name: 'org.macports.dnsmasq'
+...

@@ -1,0 +1,188 @@
+---
+dnsmasq::addresses: {}
+dnsmasq::add_subnets: {}
+dnsmasq::aliases: {}
+dnsmasq::cnames: {}
+dnsmasq::conf_dirs: {}
+dnsmasq::dhcp_boots: {}
+dnsmasq::dhcp_hosts: {}
+dnsmasq::dhcp_matches: {}
+dnsmasq::dhcp_options: {}
+dnsmasq::dhcp_ranges: {}
+dnsmasq::dns_rrs: {}
+dnsmasq::servers: {}
+dnsmasq::domains: {}
+dnsmasq::host_records: {}
+dnsmasq::mx_hosts: {}
+dnsmasq::ptr_records: {}
+dnsmasq::srv_hosts: {}
+dnsmasq::txt_records: {}
+
+dnsmasq::dnsmasq_logdir: '/var/log'
+dnsmasq::dnsmasq_conf_file: '/etc/dnsmasq.conf'
+dnsmasq::dnsmasq_conf_dir: '/etc/dnsmasq.d'
+
+dnsmasq::package_ensure: 'present'
+dnsmasq::package_manage: true
+dnsmasq::package_name: 'dnsmasq'
+dnsmasq::package_provider:
+dnsmasq::service_enable: true
+dnsmasq::service_ensure: 'running'
+dnsmasq::service_manage: true
+dnsmasq::service_hasstatus: true
+dnsmasq::service_name: 'dnsmasq'
+dnsmasq::firewall_order: '099'
+dnsmasq::firewall_defaults:
+  action: 'accept'
+  ctstate: 'NEW'
+dnsmasq::firewall_ipv4_manage: false
+dnsmasq::firewall_ipv6_manage: false
+
+dnsmasq::add_cpe_id:
+dnsmasq::add_mac:
+dnsmasq::addn_hosts:
+dnsmasq::add_subnet:
+dnsmasq::all_servers: false
+dnsmasq::auth_peer:
+dnsmasq::auth_sec_servers:
+dnsmasq::auth_server:
+dnsmasq::auth_soa:
+dnsmasq::auth_ttl:
+dnsmasq::auth_zone:
+dnsmasq::bind_dynamic: false
+dnsmasq::bind_interfaces: false
+dnsmasq::bogus_nxdomain:
+dnsmasq::bogus_priv: false
+dnsmasq::bootp_dynamic:
+dnsmasq::bridge_interface:
+dnsmasq::cache_size: 1024
+dnsmasq::clear_on_reload: false
+dnsmasq::conf_dir:
+dnsmasq::conf_file:
+dnsmasq::config_hash: {}
+dnsmasq::conntrack: false
+dnsmasq::dhcp_alternate_port_server:
+dnsmasq::dhcp_alternate_port_client:
+dnsmasq::dhcp_authoritative: false
+dnsmasq::dhcp_boot:
+dnsmasq::dhcp_broadcast:
+dnsmasq::dhcp_circuitid:
+dnsmasq::dhcp_client_update: false
+dnsmasq::dhcp_duid:
+dnsmasq::dhcp_fqdn: false
+dnsmasq::dhcp_generate_names:
+dnsmasq::dhcp_host:
+dnsmasq::dhcp_hostsdir:
+dnsmasq::dhcp_hostsfile:
+dnsmasq::dhcp_ignore:
+dnsmasq::dhcp_ignore_names:
+dnsmasq::dhcp_leasefile:
+dnsmasq::dhcp_lease_max:
+dnsmasq::dhcp_luascript:
+dnsmasq::dhcp_mac:
+dnsmasq::dhcp_match:
+dnsmasq::dhcp_no_override: false
+dnsmasq::dhcp_option:
+dnsmasq::dhcp_option_force:
+dnsmasq::dhcp_optsdir:
+dnsmasq::dhcp_optsfile:
+dnsmasq::dhcp_proxy:
+dnsmasq::dhcp_range:
+dnsmasq::dhcp_relay:
+dnsmasq::dhcp_remoteid:
+dnsmasq::dhcp_script:
+dnsmasq::dhcp_scriptuser:
+dnsmasq::dhcp_sequential_ip: false
+dnsmasq::dhcp_subscrid:
+dnsmasq::dhcp_ttl:
+dnsmasq::dhcp_userclass:
+dnsmasq::dhcp_vendorclass:
+dnsmasq::dns_forward_max:
+dnsmasq::dns_loop_detect: false
+dnsmasq::dnssec_check_unsigned: false
+dnsmasq::dnssec_debug: false
+dnsmasq::dnssec: false
+dnsmasq::dnssec_no_timecheck: false
+dnsmasq::dnssec_timestamp:
+dnsmasq::domain:
+dnsmasq::domain_needed: false
+dnsmasq::edns_packet_max:
+dnsmasq::enable_dbus:
+dnsmasq::enable_ra: false
+dnsmasq::enable_tftp: false
+dnsmasq::except_interface:
+dnsmasq::expand_hosts: false
+dnsmasq::filterwin2k: false
+dnsmasq::group:
+dnsmasq::hostsdir:
+dnsmasq::interface:
+dnsmasq::interface_name:
+dnsmasq::ipset:
+dnsmasq::keep_in_foreground: false
+dnsmasq::leasefile_ro: false
+dnsmasq::listen_address:
+dnsmasq::local:
+dnsmasq::localise_queries: false
+dnsmasq::localmx: false
+dnsmasq::local_service: false
+dnsmasq::local_ttl:
+dnsmasq::log_async:
+dnsmasq::log_dhcp: false
+dnsmasq::log_facility:
+dnsmasq::log_queries: false
+dnsmasq::manage_tftp_root: false
+dnsmasq::max_cache_ttl:
+dnsmasq::max_port:
+dnsmasq::max_ttl:
+dnsmasq::min_cache_ttl:
+dnsmasq::min_port:
+dnsmasq::mx_host:
+dnsmasq::mx_target:
+dnsmasq::naptr_record:
+dnsmasq::neg_ttl:
+dnsmasq::no_daemon: false
+dnsmasq::no_dhcp_interface:
+dnsmasq::no_hosts: false
+dnsmasq::no_negcache: false
+dnsmasq::no_ping: false
+dnsmasq::no_poll: false
+dnsmasq::no_resolv: false
+dnsmasq::pid_file:
+dnsmasq::port: 53
+dnsmasq::proxy_dnssec: false
+dnsmasq::ptr_record:
+dnsmasq::pxe_prompt:
+dnsmasq::pxe_service:
+dnsmasq::query_port:
+dnsmasq::quiet_dhcp6: false
+dnsmasq::quiet_dhcp: false
+dnsmasq::quiet_ra: false
+dnsmasq::read_ethers: false
+dnsmasq::rebind_domain_ok:
+dnsmasq::rebind_localhost_ok: false
+dnsmasq::reload_resolvconf: true
+dnsmasq::resolv_file:
+dnsmasq::rev_server:
+dnsmasq::run_as_user:
+dnsmasq::script_arp: false
+dnsmasq::selfmx: false
+dnsmasq::server:
+dnsmasq::servers_file:
+dnsmasq::srv_host:
+dnsmasq::stop_dns_rebind: false
+dnsmasq::strict_order: false
+dnsmasq::synth_domain:
+dnsmasq::tag_if:
+dnsmasq::tftp_lowercase: false
+dnsmasq::tftp_max:
+dnsmasq::tftp_mtu:
+dnsmasq::tftp_no_blocksize: false
+dnsmasq::tftp_no_fail: false
+dnsmasq::tftp_port_range_start:
+dnsmasq::tftp_port_range_end:
+dnsmasq::tftp_root: '/var/lib/tftpboot'
+dnsmasq::tftp_secure: false
+dnsmasq::tftp_unique_root: false
+dnsmasq::trust_anchor:
+dnsmasq::txt_record:
+...

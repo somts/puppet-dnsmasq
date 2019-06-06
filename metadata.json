@@ -1,48 +1,58 @@
 {
-  "name": "lex-dnsmasq",
-  "version": "2.6.1",
-  "author": "Lex Rivera <me@lex.io>",
-  "license": "CC-BY-4.0",
+  "name": "somts-dnsmasq",
+  "version": "2.6.3",
+  "author": "Ship Operations & Marine Technical Support",
   "summary": "Puppet dnsmasq management module",
-  "source": "https://github.com/rlex/puppet-dnsmasq",
-  "project_page": "(https://forge.puppetlabs.com/lex/dnsmasq)",
-  "issues_url": "https://github.com/rlex/puppet-dnsmasq/issues",
-  "tags": ["dns", "dhcp", "dnsmasq", "ubuntu", "debian", "ipv4", "ipv6", "redhat", "freebsd", "centos", "rhel"],
-  "operatingsystem_support": [
+  "license": "BSD-2-Clause",
+  "source": "https://github.com/somts/puppet-dnsmasq",
+  "project_page": "(https://forge.puppetlabs.com/somts/dnsmasq)",
+  "issues_url": "https://github.com/somts/puppet-dnsmasq/issues",
+  "dependencies": [
     {
-      "operatingsystem": "RedHat"
+      "name": "puppetlabs/concat",
+      "version_requirement": ">= 6.0.0"
     },
     {
-      "operatingsystem": "CentOS"
+      "name": "puppetlabs/firewall",
+      "version_requirement": ">= 2.0.0"
     },
     {
-      "operatingsystem": "OracleLinux"
-    },
-    {
-      "operatingsystem": "Debian"
-    },
-    {
-      "operatingsystem": "Ubuntu"
-    },
-    {
-      "operatingsystem": "DragonFly"
-    },
-    {
-      "operatingsystem": "FreeBSD"
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 6.0.0"
     }
+  ],
+  "operatingsystem_support": [
+    { "operatingsystem": "Darwin", "operatingsystemrelease": [ "15" ] },
+    { "operatingsystem": "FreeBSD", "operatingsystemrelease": [ "11" ] },
+    { "operatingsystem": "RedHat", "operatingsystemrelease": [ "6", "7" ] },
+    { "operatingsystem": "CentOS", "operatingsystemrelease": [ "6", "7" ] },
+    { "operatingsystem": "Debian", "operatingsystemrelease": [ "8", "9" ] },
+    { "operatingsystem": "Ubuntu", "operatingsystemrelease": [ "8", "9" ] }
   ],
   "requirements": [
     {
       "name": "pe",
-      "version_requirement": "3.2.x"
+      "version_requirement": "5.0.x"
     },
     {
       "name": "puppet",
-      "version_requirement": "3.x"
+      "version_requirement": "5.x"
     }
   ],
-  "dependencies": [
-    { "name": "puppetlabs/stdlib", "version_requirement": ">= 3.2.0" },
-    { "name": "puppetlabs/concat", "version_requirement": ">= 1.0.0" }
-  ]
+  "tags": [
+    "dns",
+    "dhcp",
+    "dnsmasq",
+    "ubuntu",
+    "debian",
+    "ipv4",
+    "ipv6",
+    "redhat",
+    "freebsd",
+    "centos",
+    "rhel"
+  ],
+  "pdk-version": "1.10.0",
+  "template-url": "https://github.com/puppetlabs/pdk-templates#1.10.0",
+  "template-ref": "tags/1.10.0-0-gbba9ac3"
 }

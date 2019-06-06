@@ -1,178 +1,186 @@
 # Primary class with options.  See documentation at
 # http://www.thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html
-class dnsmasq (
-  $auth_sec_servers         = undef,
-  $auth_server              = undef,
-  $auth_ttl                 = undef,
-  $auth_zone                = undef,
-  $bogus_priv               = true,
-  $cache_size               = 1000,
-  $config_hash              = {},
-  $dhcp_boot                = undef,
-  $dhcp_leasefile           = undef,
-  $dhcp_no_override         = false,
-  $domain                   = undef,
-  $domain_needed            = true,
-  $dns_forward_max          = undef,
-  $dnsmasq_confdir          = $dnsmasq::params::dnsmasq_confdir,
-  $dnsmasq_conffile         = $dnsmasq::params::dnsmasq_conffile,
-  $dnsmasq_hasstatus        = $dnsmasq::params::dnsmasq_hasstatus,
-  $dnsmasq_logdir           = $dnsmasq::params::dnsmasq_logdir,
-  $dnsmasq_package          = $dnsmasq::params::dnsmasq_package,
-  $dnsmasq_package_provider = $dnsmasq::params::dnsmasq_package_provider,
-  $dnsmasq_service          = $dnsmasq::params::dnsmasq_service,
-  $enable_tftp              = false,
-  $expand_hosts             = true,
-  $interface                = undef,
-  $listen_address           = undef,
-  $local_ttl                = undef,
-  $manage_tftp_root         = false,
-  $max_ttl                  = undef,
-  $max_cache_ttl            = undef,
-  $neg_ttl                  = undef,
-  $no_dhcp_interface        = undef,
-  $no_hosts                 = false,
-  $no_negcache              = false,
-  $no_resolv                = false,
-  $port                     = '53',
-  $read_ethers              = false,
-  $reload_resolvconf        = true,
-  $resolv_file              = false,
-  $restart                  = true,
-  $run_as_user              = undef,
-  $save_config_file         = true,
-  $service_enable           = true,
-  $service_ensure           = 'running',
-  $strict_order             = true,
-  $tftp_root                = '/var/lib/tftpboot',
-) inherits dnsmasq::params {
+class dnsmasq(
+  Stdlib::Absolutepath $dnsmasq_logdir,
+  Stdlib::Absolutepath $dnsmasq_conf_file,
+  Stdlib::Absolutepath $dnsmasq_conf_dir,
+  String $package_ensure,
+  Boolean $package_manage,
+  Variant[String,Array[String]] $package_name,
+  Optional[String] $package_provider,
+  Boolean $manage_tftp_root,
+  Boolean $reload_resolvconf,
+  $run_as_user,
+  String $service_name,
+  Boolean $service_enable,
+  Boolean $service_manage,
+  Boolean $service_hasstatus,
+  Enum['running','stopped'] $service_ensure,
+  Hash $firewall_defaults,
+  String $firewall_order,
+  Boolean $firewall_ipv4_manage,
+  Boolean $firewall_ipv6_manage,
+  Hash $config_hash,
+  # Use defined types to build some lines of dnsmasq.conf
+  Hash $addresses,
+  Hash $add_subnets,
+  Hash $aliases,
+  Hash $cnames,
+  Hash $conf_dirs,
+  Hash $dhcp_boots,
+  Hash $dhcp_hosts,
+  Hash $dhcp_matches,
+  Hash $dhcp_options,
+  Hash $dhcp_ranges,
+  Hash $dns_rrs,
+  Hash $domains,
+  Hash $host_records,
+  Hash $mx_hosts,
+  Hash $ptr_records,
+  Hash $servers,
+  Hash $srv_hosts,
+  Hash $txt_records,
+  # Otherwise, per `dnsmasq --help` on Dnsmasq version 2.76...
+  Optional[String] $add_cpe_id,
+  Variant[Boolean,Enum['base64','text'],Undef] $add_mac,
+  Variant[Stdlib::Absolutepath,Array[Stdlib::Absolutepath],Undef] $addn_hosts,
+  Boolean $all_servers,
+  $auth_peer,
+  $auth_sec_servers,
+  $auth_soa,
+  $auth_server,
+  Optional[Integer] $auth_ttl,
+  $auth_zone,
+  Boolean $bind_dynamic,
+  Boolean $bind_interfaces,
+  $bogus_nxdomain,
+  Boolean $bogus_priv,
+  Variant[String,Array[String],Undef] $bootp_dynamic,
+  $bridge_interface,
+  Integer $cache_size,
+  Boolean $clear_on_reload,
+  Variant[Stdlib::Absolutepath,Array[Stdlib::Absolutepath],Undef] $conf_file,
+  Boolean $conntrack,
+  Optional[Stdlib::Port] $dhcp_alternate_port_server,
+  Optional[Stdlib::Port] $dhcp_alternate_port_client,
+  Boolean $dhcp_authoritative,
+  $dhcp_boot,
+  $dhcp_broadcast,
+  $dhcp_circuitid,
+  Boolean $dhcp_client_update,
+  $dhcp_duid,
+  Boolean $dhcp_fqdn,
+  $dhcp_generate_names,
+  $dhcp_hostsdir,
+  $dhcp_hostsfile,
+  $dhcp_ignore,
+  $dhcp_ignore_names,
+  Optional[Stdlib::Absolutepath] $dhcp_leasefile,
+  $dhcp_lease_max,
+  $dhcp_luascript,
+  $dhcp_mac,
+  $dhcp_match,
+  Boolean $dhcp_no_override,
+  $dhcp_optsdir,
+  $dhcp_optsfile,
+  $dhcp_proxy,
+  $dhcp_relay,
+  $dhcp_remoteid,
+  $dhcp_script,
+  $dhcp_scriptuser,
+  Boolean $dhcp_sequential_ip,
+  $dhcp_subscrid,
+  Optional[Integer] $dhcp_ttl,
+  $dhcp_userclass,
+  $dhcp_vendorclass,
+  Optional[Integer] $dns_forward_max,
+  Boolean $dns_loop_detect,
+  Boolean $dnssec,
+  Boolean $dnssec_check_unsigned,
+  Boolean $dnssec_debug,
+  Boolean $dnssec_no_timecheck,
+  $dnssec_timestamp,
+  Boolean $domain_needed,
+  $edns_packet_max,
+  Optional[String] $enable_dbus,
+  Boolean $enable_ra,
+  Boolean $enable_tftp,
+  $except_interface,
+  Boolean $expand_hosts,
+  Boolean $filterwin2k,
+  Optional[String] $group,
+  Optional[Stdlib::Absolutepath] $hostsdir,
+  $interface,
+  $interface_name,
+  $ipset,
+  Boolean $keep_in_foreground,
+  Boolean $leasefile_ro,
+  Optional[Stdlib::IP::Address] $listen_address,
+  Boolean $localise_queries,
+  Variant[Stdlib::Fqdn,Array[Stdlib::Fqdn],Undef] $local,
+  Boolean $localmx,
+  Boolean $local_service,
+  Optional[Integer] $local_ttl,
+  Variant[Boolean,Integer,Undef] $log_async,
+  Boolean $log_dhcp,
+  Optional[String] $log_facility,
+  Boolean $log_queries,
+  Optional[Integer] $max_cache_ttl,
+  Optional[Stdlib::Port] $max_port,
+  Optional[Integer] $max_ttl,
+  Optional[Integer] $min_cache_ttl,
+  Optional[Stdlib::Port] $min_port,
+  $mx_host,
+  Optional[Stdlib::Fqdn] $mx_target,
+  $naptr_record,
+  Optional[Integer] $neg_ttl,
+  Boolean $no_daemon,
+  $no_dhcp_interface,
+  Boolean $no_hosts,
+  Boolean $no_negcache,
+  Boolean $no_ping,
+  Boolean $no_poll,
+  Boolean $no_resolv,
+  Optional[Stdlib::Absolutepath] $pid_file,
+  Stdlib::Port $port,
+  Boolean $proxy_dnssec,
+  $pxe_prompt,
+  $pxe_service,
+  Optional[Stdlib::Port] $query_port,
+  Boolean $quiet_dhcp6,
+  Boolean $quiet_dhcp,
+  Boolean $quiet_ra,
+  Boolean $read_ethers,
+  $rebind_domain_ok,
+  Boolean $rebind_localhost_ok,
+  Optional[Stdlib::Absolutepath] $resolv_file,
+  $rev_server,
+  Boolean $script_arp,
+  Boolean $selfmx,
+  Variant[Stdlib::Absolutepath,Array[Stdlib::Absolutepath],Undef] $servers_file,
+  Boolean $stop_dns_rebind,
+  Boolean $strict_order,
+  $synth_domain,
+  $tag_if,
+  Boolean $tftp_lowercase,
+  Optional[Integer] $tftp_max,
+  Optional[Integer] $tftp_mtu,
+  Boolean $tftp_no_blocksize,
+  Boolean $tftp_no_fail,
+  Optional[Stdlib::Port::Unprivileged] $tftp_port_range_start,
+  Optional[Stdlib::Port::Unprivileged] $tftp_port_range_end,
+  Stdlib::Absolutepath $tftp_root,
+  Boolean $tftp_secure,
+  Boolean $tftp_unique_root,
+  $trust_anchor,
+) {
+  Class['dnsmasq::install']
+  -> Class['dnsmasq::config']
+  ~> Class['dnsmasq::service']
+  -> Class['dnsmasq::firewall']
 
-  ## VALIDATION
-
-  validate_bool(
-    $bogus_priv,
-    $dhcp_no_override,
-    $domain_needed,
-    $dnsmasq_hasstatus,
-    $enable_tftp,
-    $expand_hosts,
-    $manage_tftp_root,
-    $no_hosts,
-    $no_negcache,
-    $no_resolv,
-    $save_config_file,
-    $service_enable,
-    $strict_order,
-    $read_ethers,
-    $reload_resolvconf,
-    $restart
-  )
-  validate_hash($config_hash)
-  validate_re($service_ensure,'^(running|stopped)$')
-  if undef != $auth_ttl      { validate_re($auth_ttl,'^[0-9]+') }
-  if undef != $local_ttl     { validate_re($local_ttl,'^[0-9]+') }
-  if undef != $neg_ttl       { validate_re($neg_ttl,'^[0-9]+') }
-  if undef != $max_ttl       { validate_re($max_ttl,'^[0-9]+') }
-  if undef != $max_cache_ttl { validate_re($max_cache_ttl,'^[0-9]+') }
-  if undef != $listen_address and !is_ip_address($listen_address) {
-    fail("Expect IP address for listen_address, got ${listen_address}")
-  }
-
-  ## CLASS VARIABLES
-
-  # Allow custom ::provider fact to override our provider, but only
-  # if it is undef.
-  $custom_provider = defined('$::provider') ? {
-    true  => $::provider,
-    false => undef
-  }
-
-  $provider_real = empty($custom_provider) ? {
-    true    => $dnsmasq_package_provider ? {
-      undef   => $custom_provider,
-      default => $dnsmasq_package_provider,
-    },
-    default => $dnsmasq_package_provider,
-  }
-
-  ## MANAGED RESOURCES
-
-  concat { 'dnsmasq.conf':
-    path    => $dnsmasq_conffile,
-    warn    => true,
-    require => Package['dnsmasq'],
-  }
-
-  concat::fragment { 'dnsmasq-header':
-    order   => '00',
-    target  => 'dnsmasq.conf',
-    content => template('dnsmasq/dnsmasq.conf.erb'),
-  }
-
-  package { 'dnsmasq':
-    ensure   => installed,
-    name     => $dnsmasq_package,
-    provider => $provider_real,
-    before   => Service['dnsmasq'],
-  }
-
-  service { 'dnsmasq':
-    ensure    => $service_ensure,
-    name      => $dnsmasq_service,
-    enable    => $service_enable,
-    hasstatus => $dnsmasq_hasstatus,
-  }
-
-  if $restart {
-    Concat['dnsmasq.conf'] ~> Service['dnsmasq']
-  }
-
-  if $dnsmasq_confdir {
-    file { $dnsmasq_confdir:
-      ensure => 'directory',
-      owner  => 0,
-      group  => 0,
-      mode   => '0755',
-    }
-  }
-
-  if $save_config_file {
-    # let's save the commented default config file after installation.
-    exec { 'save_config_file':
-      command => "cp ${dnsmasq_conffile} ${dnsmasq_conffile}.orig",
-      creates => "${dnsmasq_conffile}.orig",
-      path    => [ '/usr/bin', '/usr/sbin', '/bin', '/sbin', ],
-      require => Package['dnsmasq'],
-      before  => Concat['dnsmasq.conf'],
-    }
-  }
-
-  if $reload_resolvconf {
-    exec { 'reload_resolvconf':
-      provider => shell,
-      command  => '/sbin/resolvconf -u',
-      path     => [ '/usr/bin', '/usr/sbin', '/bin', '/sbin', ],
-      user     => root,
-      onlyif   => 'test -f /sbin/resolvconf',
-      before   => Service['dnsmasq'],
-      require  => Package['dnsmasq'],
-    }
-  }
-
-  if $manage_tftp_root {
-    file { $tftp_root:
-      ensure => directory,
-      owner  => 0,
-      group  => 0,
-      mode   => '0644',
-      before => Service['dnsmasq'],
-    }
-  }
-
-  if ! $no_hosts {
-    Host <||> {
-      notify +> Service['dnsmasq'],
-    }
-  }
+  contain 'dnsmasq::install'
+  contain 'dnsmasq::config'
+  contain 'dnsmasq::service'
+  contain 'dnsmasq::firewall'
 }
-

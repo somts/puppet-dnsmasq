@@ -1,11 +1,9 @@
 ---
 fixtures:
-  repositories:
-    concat:
-      repo: 'https://github.com/puppetlabs/puppetlabs-concat'
-      ref: 2.1.0
-    stdlib:
-      repo: 'https://github.com/puppetlabs/puppetlabs-stdlib'
-      ref: 4.11.0
+  forge_modules:
+    concat: 'puppetlabs/concat'
+    firewall: 'puppetlabs/firewall'
+    stdlib: 'puppetlabs/stdlib'
   symlinks:
     dnsmasq: "#{source_dir}"
+...

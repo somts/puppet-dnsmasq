@@ -4,6 +4,7 @@ dnsmasq::add_subnets: {}
 dnsmasq::aliases: {}
 dnsmasq::cnames: {}
 dnsmasq::conf_dirs: {}
+dnsmasq::conf_files: {}
 dnsmasq::dhcp_boots: {}
 dnsmasq::dhcp_hosts: {}
 dnsmasq::dhcp_matches: {}
@@ -35,11 +36,13 @@ dnsmasq::firewall_order: '099'
 dnsmasq::firewall_defaults:
   action: 'accept'
   ctstate: 'NEW'
+  proto: 'udp'
 dnsmasq::firewall_ipv4_manage: false
 dnsmasq::firewall_ipv6_manage: false
 
 dnsmasq::add_cpe_id:
 dnsmasq::add_mac:
+dnsmasq::add_subnet:
 dnsmasq::addn_hosts:
 dnsmasq::add_subnet:
 dnsmasq::all_servers: false

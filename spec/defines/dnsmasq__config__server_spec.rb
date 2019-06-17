@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'dnsmasq::config::server', :type => 'define' do
+describe 'dnsmasq::config::server', type: 'define' do
   let :title do
     '192.168.1.1'
   end

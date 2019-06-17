@@ -1,13 +1,10 @@
 # Create a dnsmasq dhcp match (--dhcp-match)
 define dnsmasq::config::dhcp_match(
+  String $set,
   Variant[String,Integer] $option = $name,
-  String $tag,
-  Optional[String] $value,
+  Variant[String,Integer,Undef] $value = undef,
 ) {
-  $_tag = $tag ? {
-    undef   => undef,
-    default => "set:${tag}",
-  }
+  $_set = "set:${set}"
   $_option = $option ? {
     undef        => undef,
     /^[0-9]+$/   => $option,
@@ -16,10 +13,10 @@ define dnsmasq::config::dhcp_match(
     default      => "option:${option}",
   }
   $content = join(delete_undef_values([
-    $_tag,
+    $_set,
     $_option,
     $value,
-  ]), '')
+  ]), ',')
 
   include dnsmasq
 

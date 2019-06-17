@@ -1,37 +1,46 @@
 # Create a dnsmasq stub zone for caching upstream name resolvers
 # (--dhcp-host).
 define dnsmasq::config::dhcp_host(
-  Stdlib::IP::Address::Nosubnet $ipaddr,
-  Stdlib::Fqdn $hostname = $name,
+  Optional[Stdlib::IP::Address::Nosubnet] $ipaddr,
+  Optional[Stdlib::Fqdn] $hostname = $name,
   Boolean $ignore = false,
-  Optional[Stdlib::MAC] $hwaddr,
+  Variant[Stdlib::MAC,Stdlib::Host,Undef] $hwaddr,
   Optional[String] $id = undef,
-  Optional[String] $tag = undef,
-  Optional[Integer] $lease_time = undef,
+  Optional[String] $set = undef,
+  Variant[Integer,Enum['infinite'],Undef] $lease_time = undef,
 ) {
+  if undef == $ipaddr and undef == $hostname and undef == $hwaddr {
+    fail('Not enough parameters specified')
+  }
+
   $_hwaddr = $hwaddr ? {
     undef   => undef,
     default => downcase($hwaddr),
   }
   $_id = $id ? {
     undef   => undef,
-    '*'     => '*',
     default => "id:${id}",
   }
-  $_tag = $tag ? {
+  $_set = $set ? {
     undef   => undef,
-    default => "set:${tag}",
+    default => "set:${set}",
   }
   $_ignore = $ignore ? {
     false   => undef,
     default => 'ignore',
   }
+  if $ipaddr =~ Stdlib::IP::Address::V6 {
+    $_ipaddr = join(['[',downcase($ipaddr),']'],'')
+  } else {
+    $_ipaddr = $ipaddr
+  }
 
   $content = join(delete_undef_values([
     $_hwaddr,
     $_id,
-    $_tag,
-    $ipaddr,
+    $_set,
+    $_ipaddr,
+    $hostname,
     $lease_time,
     $_ignore,
   ]), ',')

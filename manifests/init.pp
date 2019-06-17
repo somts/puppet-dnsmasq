@@ -21,12 +21,12 @@ class dnsmasq(
   Boolean $firewall_ipv4_manage,
   Boolean $firewall_ipv6_manage,
   Hash $config_hash,
-  # Use defined types to build some lines of dnsmasq.conf
+  # Use defined types to build some lines of dnsmasq.conf...
   Hash $addresses,
-  Hash $add_subnets,
   Hash $aliases,
   Hash $cnames,
   Hash $conf_dirs,
+  Hash $conf_files,
   Hash $dhcp_boots,
   Hash $dhcp_hosts,
   Hash $dhcp_matches,
@@ -40,9 +40,10 @@ class dnsmasq(
   Hash $servers,
   Hash $srv_hosts,
   Hash $txt_records,
-  # Otherwise, per `dnsmasq --help` on Dnsmasq version 2.76...
+  # ...Otherwise, populate per `dnsmasq --help` on Dnsmasq version 2.76.
   Optional[String] $add_cpe_id,
   Variant[Boolean,Enum['base64','text'],Undef] $add_mac,
+  Variant[Stdlib::IP::Address,Array[Stdlib::IP::Address,1,2],Undef] $add_subnet,
   Variant[Stdlib::Absolutepath,Array[Stdlib::Absolutepath],Undef] $addn_hosts,
   Boolean $all_servers,
   $auth_peer,
@@ -177,10 +178,8 @@ class dnsmasq(
   Class['dnsmasq::install']
   -> Class['dnsmasq::config']
   ~> Class['dnsmasq::service']
-  -> Class['dnsmasq::firewall']
 
   contain 'dnsmasq::install'
   contain 'dnsmasq::config'
   contain 'dnsmasq::service'
-  contain 'dnsmasq::firewall'
 }

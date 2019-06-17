@@ -1,16 +1,17 @@
 # Create a dnsmasq synthetic domain (--synth-domain).
 define dnsmasq::config::synth_domain(
-  Stdlib::Fqdn $domain = $name,
-  Variant[Stdlib::IP::Address,Array[Stdlib::IP::Address]] $address_range,
   String $prefix,
+  Array[Stdlib::IP::Address::Nosubnet,2,2] $address_range,
+  Stdlib::Fqdn $domain = $name,
 ) {
   include dnsmasq
 
-  $content = join(delete_undef_values(flatten([
+  $content = join(delete_undef_values([
     $domain,
-    $address_range,
+    $address_range[0],
+    $address_range[1],
     $prefix,
-  ])), ',')
+  ]), ',')
 
   concat::fragment { "dnsmasq-synth-domain-${name}":
     target  => 'dnsmasq.conf',

@@ -3,22 +3,11 @@ require 'spec_helper' # frozen_string_literal: true
 describe 'dnsmasq', type: :class do
   shared_context 'Supported Platform' do
     it do is_expected.to compile.with_all_deps end
-    it do
-      is_expected.to contain_class('dnsmasq::install').that_comes_before('Class[dnsmasq::config]')
-    end
-    it do
-      is_expected.to contain_class('dnsmasq::config').that_notifies('Class[dnsmasq::service]')
-    end
-    it do
-      is_expected.to contain_class('dnsmasq::service').that_comes_before('Class[dnsmasq::firewall]')
-    end
-    it do is_expected.to contain_class('dnsmasq::firewall') end
-    it do is_expected.to contain_class('dnsmasq::firewall::dns') end
-    it do is_expected.to_not contain_class('dnsmasq::firewall::dhcp') end
-    it do is_expected.to_not contain_class('dnsmasq::firewall::tftp') end
+    it do is_expected.to contain_class('dnsmasq::install').that_comes_before('Class[dnsmasq::config]') end
+    it do is_expected.to contain_class('dnsmasq::config').that_notifies('Class[dnsmasq::service]') end
+    it do is_expected.to contain_class('dnsmasq::service') end
 
     describe 'dnsmasq::install' do
-
       context 'should allow package ensure to be overridden' do
         let :params do
           { package_name: 'dnsmasq', package_ensure: 'latest' }
@@ -94,13 +83,10 @@ describe 'dnsmasq', type: :class do
         end
 
         it do
-          is_expected.to contain_concat__fragment(
-            'dnsmasq.conf_top'
-          ).with_content(%r{\nenable-tftp\n})
+          is_expected.to contain_concat__fragment('dnsmasq.conf_top').with_content(
+            %r{\nenable-tftp\n},
+          )
         end
-        it do is_expected.to contain_class('dnsmasq::firewall::tftp') end
-        it do is_expected.to_not contain_firewall('099 dnsmasq IPv4 UDP TFTP') end
-        it do is_expected.to_not contain_firewall('099 dnsmasq IPv6 UDP TFTP') end
       end
     end
 
@@ -110,6 +96,11 @@ describe 'dnsmasq', type: :class do
       end
 
       context 'with defaults' do
+        it do
+          is_expected.to contain_exec('dnsmasq --test').with(
+            refreshonly: true,
+          ).that_comes_before('Service[dnsmasq]')
+        end
         it do
           is_expected.to contain_service('dnsmasq').with(
             ensure: 'running',
@@ -144,21 +135,15 @@ describe 'dnsmasq', type: :class do
         end
       end
     end
-
-    describe 'dnsmasq::firewall' do
-      it do is_expected.not_to contain_firewall('099 dnsmasq IPv4 udp DNS') end
-      it do is_expected.not_to contain_firewall('099 dnsmasq IPv4 tcp DNS') end
-      it do is_expected.not_to contain_firewall('099 dnsmasq IPv6 udp DNS') end
-      it do is_expected.not_to contain_firewall('099 dnsmasq IPv6 tcp DNS') end
-    end
   end
 
   shared_context 'Darwin' do
     describe 'dnsmasq::install' do
-      it do is_expected.to contain_package('dnsmasq').with(
-        ensure: 'present',
-        provider: 'macports',
-      )
+      it do
+        is_expected.to contain_package('dnsmasq').with(
+          ensure: 'present',
+          provider: 'macports',
+        )
       end
     end
 
@@ -188,6 +173,12 @@ describe 'dnsmasq', type: :class do
           name: 'org.macports.dnsmasq',
         )
       end
+      it do
+        is_expected.to contain_exec('dnsmasq --test').with(
+          command: 'dnsmasq --conf-file=/opt/local/etc/dnsmasq.conf --test',
+          path: ['/opt/local/bin', '/opt/local/sbin', '/bin', '/sbin', '/usr/bin', '/usr/sbin'],
+        ).that_comes_before('Service[dnsmasq]')
+      end
     end
 
     describe 'dnsmasq::firewall' do
@@ -196,10 +187,10 @@ describe 'dnsmasq', type: :class do
           { firewall_ipv4_manage: true }
         end
 
-        it do is_expected.to_not compile end
+        it do is_expected.not_to compile end
         it do
           is_expected.to raise_error(
-            Puppet::Error, %r{Darwin is unsupported by dnsmasq::firewall}
+            Puppet::Error, %r{Darwin is unsupported by dnsmasq}
           )
         end
       end
@@ -209,10 +200,10 @@ describe 'dnsmasq', type: :class do
           { firewall_ipv6_manage: true }
         end
 
-        it do is_expected.to_not compile end
+        it do is_expected.not_to compile end
         it do
           is_expected.to raise_error(
-            Puppet::Error, %r{Darwin is unsupported by dnsmasq::firewall}
+            Puppet::Error, %r{Darwin is unsupported by dnsmasq}
           )
         end
       end
@@ -244,16 +235,25 @@ describe 'dnsmasq', type: :class do
       end
     end
 
+    describe 'dnsmasq::service' do
+      it do
+        is_expected.to contain_exec('dnsmasq --test').with(
+          command: 'dnsmasq --conf-file=/usr/local/etc/dnsmasq.conf --test',
+          path: ['/usr/local/bin', '/usr/local/sbin', '/bin', '/sbin', '/usr/bin', '/usr/sbin'],
+        ).that_comes_before('Service[dnsmasq]')
+      end
+    end
+
     describe 'dnsmasq::firewall' do
       context 'manage IPv4' do
         let :params do
           { firewall_ipv4_manage: true }
         end
 
-        it do is_expected.to_not compile end
+        it do is_expected.not_to compile end
         it do
           is_expected.to raise_error(
-            Puppet::Error, %r{FreeBSD is unsupported by dnsmasq::firewall}
+            Puppet::Error, %r{FreeBSD is unsupported by dnsmasq}
           )
         end
       end
@@ -263,10 +263,10 @@ describe 'dnsmasq', type: :class do
           { firewall_ipv6_manage: true }
         end
 
-        it do is_expected.to_not compile end
+        it do is_expected.not_to compile end
         it do
           is_expected.to raise_error(
-            Puppet::Error, %r{FreeBSD is unsupported by dnsmasq::firewall}
+            Puppet::Error, %r{FreeBSD is unsupported by dnsmasq}
           )
         end
       end
@@ -303,11 +303,25 @@ describe 'dnsmasq', type: :class do
             enable_tftp: true,
             firewall_ipv4_manage: true,
             firewall_ipv6_manage: true,
+            tftp_port_range_start: 40_000,
+            tftp_port_range_end: 40_999,
           }
         end
 
+        it do is_expected.to contain_class('dnsmasq::firewall_tftp') end
         it do is_expected.to contain_firewall('099 dnsmasq IPv4 UDP TFTP').with_dport(69) end
+        it do is_expected.to contain_firewall('099 dnsmasq IPv4 UDP TFTP Port Range').with_dport('40000-40999') end
         it do is_expected.to contain_firewall('099 dnsmasq IPv6 UDP TFTP').with_dport(69) end
+        it do is_expected.to contain_firewall('099 dnsmasq IPv6 UDP TFTP Port Range').with_dport('40000-40999') end
+      end
+    end
+
+    describe 'dnsmasq::service' do
+      it do
+        is_expected.to contain_exec('dnsmasq --test').with(
+          command: 'dnsmasq --conf-file=/etc/dnsmasq.conf --test',
+          path: ['/bin', '/sbin', '/usr/bin', '/usr/sbin'],
+        ).that_comes_before('Service[dnsmasq]')
       end
     end
 
@@ -317,15 +331,20 @@ describe 'dnsmasq', type: :class do
           { firewall_ipv4_manage: true }
         end
 
-        ['tcp', 'udp'].each do |i|
-          it do
-            is_expected.to contain_firewall("099 dnsmasq IPv4 #{i} DNS").with(
-              ctstate: 'NEW',
-              action: 'accept',
-              dport: 53,
-              proto: i,
-            )
-          end
+        it do is_expected.to contain_class('dnsmasq::firewall_dns') end
+        it do
+          is_expected.to contain_firewall('099 dnsmasq IPv4 udp DNS').with(
+            dport: 53,
+            proto: 'udp',
+            provider: nil,
+          )
+        end
+        it do
+          is_expected.to contain_firewall('099 dnsmasq IPv4 tcp DNS').with(
+            dport: 53,
+            proto: 'tcp',
+            provider: nil,
+          )
         end
       end
 
@@ -334,16 +353,20 @@ describe 'dnsmasq', type: :class do
           { firewall_ipv6_manage: true }
         end
 
-        ['tcp', 'udp'].each do |i|
-          it do
-            is_expected.to contain_firewall("099 dnsmasq IPv6 #{i} DNS").with(
-              ctstate: 'NEW',
-              action: 'accept',
-              dport: 53,
-              proto: i,
-              provider: 'ip6tables',
-            )
-          end
+        it do is_expected.to contain_class('dnsmasq::firewall_dns') end
+        it do
+          is_expected.to contain_firewall('099 dnsmasq IPv6 udp DNS').with(
+            dport: 53,
+            proto: 'udp',
+            provider: 'ip6tables',
+          )
+        end
+        it do
+          is_expected.to contain_firewall('099 dnsmasq IPv6 tcp DNS').with(
+            dport: 53,
+            proto: 'tcp',
+            provider: 'ip6tables',
+          )
         end
       end
     end

@@ -1,19 +1,15 @@
 # Manage a dnsmasq alias record (--alias).
 define dnsmasq::config::alias(
+  Variant[Stdlib::IP::Address::Nosubnet,
+    Array[Stdlib::IP::Address::Nosubnet,2,2]] $old_ip,
   Stdlib::IP::Address::Nosubnet $new_ip = $name,
-  Optional[String] $mask = undef,
-  Optional[Stdlib::IP::Address::Nosubnet] $old_ip = undef,
-  Optional[Stdlib::IP::Address::Nosubnet] $start_ip = undef,
-  Optional[Stdlib::IP::Address::Nosubnet] $end_ip = undef,
+  Optional[Stdlib::IP::Address::Nosubnet] $mask = undef,
 ) {
-  if undef == $old_ip and (undef == $start_ip or undef == $end_ip) {
-    fail('Must specify old_ip or start_ip and end_ip')
+  $_old_ip = $old_ip ? {
+    undef   => undef,
+    default => join(flatten([$old_ip]),'-'),
   }
 
-  $_old_ip = $old_ip ? {
-    undef   => "${start_ip}-${end_ip}",
-    default => $old_ip,
-  }
   $content = join(delete_undef_values([
     $_old_ip,
     $new_ip,
@@ -24,6 +20,6 @@ define dnsmasq::config::alias(
 
   concat::fragment { "dnsmasq-alias-${name}":
     target  => 'dnsmasq.conf',
-    content => "alias=${content}"),
+    content => "alias=${content}",
   }
 }

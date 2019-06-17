@@ -18,9 +18,9 @@ describe 'dnsmasq::config::host_record', type: 'define' do
         { ipaddr: '192.168.1.1' }
       end
 
-      it do should contain_class('dnsmasq') end
+      it do is_expected.to contain_class('dnsmasq') end
       it do
-        should contain_concat__fragment('dnsmasq-host-record-example.com').with(
+        is_expected.to contain_concat__fragment('dnsmasq-host-record-example.com').with(
           target: 'dnsmasq.conf',
           content: 'host-record=example.com,192.168.1.1',
         )
@@ -32,7 +32,7 @@ describe 'dnsmasq::config::host_record', type: 'define' do
         end
 
         it do
-          should contain_concat__fragment('dnsmasq-host-record-example.com').with(
+          is_expected.to contain_concat__fragment('dnsmasq-host-record-example.com').with(
             target: 'dnsmasq.conf',
             content: 'host-record=example.com,192.168.1.1,60',
           )
@@ -45,7 +45,7 @@ describe 'dnsmasq::config::host_record', type: 'define' do
         end
 
         it do
-          should contain_concat__fragment('dnsmasq-host-record-example.com').with(
+          is_expected.to contain_concat__fragment('dnsmasq-host-record-example.com').with(
             target: 'dnsmasq.conf',
             content: 'host-record=foo.com,bar.com,192.168.1.1',
           )
@@ -58,7 +58,7 @@ describe 'dnsmasq::config::host_record', type: 'define' do
         end
 
         it do
-          should contain_concat__fragment('dnsmasq-host-record-example.com').with(
+          is_expected.to contain_concat__fragment('dnsmasq-host-record-example.com').with(
             target: 'dnsmasq.conf',
             content: 'host-record=example.com,fe80::ad05:1248:a50d:8a8d',
           )
@@ -71,7 +71,7 @@ describe 'dnsmasq::config::host_record', type: 'define' do
         end
 
         it do
-          should contain_concat__fragment('dnsmasq-host-record-example.com').with(
+          is_expected.to contain_concat__fragment('dnsmasq-host-record-example.com').with(
             target: 'dnsmasq.conf',
             content: 'host-record=example.com,192.168.1.1,fe80::ad05:1248:a50d:8a8d',
           )
@@ -88,7 +88,7 @@ describe 'dnsmasq::config::host_record', type: 'define' do
         end
 
         it do
-          should contain_concat__fragment('dnsmasq-host-record-example.com').with(
+          is_expected.to contain_concat__fragment('dnsmasq-host-record-example.com').with(
             target: 'dnsmasq.conf',
             content: 'host-record=foo.com,bar.com,192.168.1.1,fe80::ad05:1248:a50d:8a8d,60',
           )

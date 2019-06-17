@@ -1,9 +1,18 @@
 ### DESCRIPTION
 
-**note by @dsbaars**: This is a modified version of [lex-dnsmasq#bc1a6b1 ](https://github.com/rlex/puppet-dnsmasq/commit/bc1a6b1afddf9c5bbda912153c3bc709d9781b18)<br>
-It is **working with Puppet** 4 and is tagged for convenience.
+Manage the dnsmasq service.
 
-I wrote this module in need of managing bunch of servers running dnsmasq.
+Much of this module is a direct mapping of the parameter descriptions at
+[http://www.thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html] and mapping
+that to Puppet-compatible parameters (and back). It is forked from
+[https://github.com/dsbaars/puppet-dnsmasq], which was forked from
+[https://github.com/rlex/puppet-dnsmasq], but has been heavily modified
+to address some issues:
+
+* The original module has not been updated since Puppet 3 and is not forward-compatible. The fork made the module Puppet 4 compatible, but minimally. At the time of this writing, both versions of Puppet are no longer supported, so it is time to move on
+* Changed parameter names and defined types to strictly match the assocaited parameters named from the man page, and sorted under *dnsmasq::config* for organization (E.G. `--dhcp-host` in the *.conf* becomes Puppet Defined Type *dnsmasq::config::dhcp_host*)
+* This module makes heavy use of Data Types, which was not available in Puppet 3, including some network-specific Data Types from [https://forge.puppet.com/puppetlabs/stdlib]
+* Add moderate logic to open up firewall holes for the various sub-services dnsmasq can support (DHCP, DNS, TFTP).
 
 It features some advanced features like:
 
@@ -20,12 +29,13 @@ It features some advanced features like:
 
 ### DEPENDENCIES
 
-* puppet >= 3.8
+* puppet >= 5.0
 * puppetlabs/concat >= 1.0.0
+* puppetlabs/firewall >= 1.0.0
 * puppetlabs/stdlib >= 3.2.0
 
 ### BUILD STATUS
-[![Build Status](https://travis-ci.org/dsbaars/puppet-dnsmasq.svg?branch=master)](https://travis-ci.org/dsbaars/puppet-dnsmasq)
+[![Build Status](https://travis-ci.org/somts/puppet-dnsmasq.svg?branch=master)](https://travis-ci.org/somts/puppet-dnsmasq)
 
 ### Basic class
 
@@ -61,55 +71,54 @@ Core variables:
 
 Variable      | Type          | Default | Description
 ------------- | ------------- | ------------ | -----------
-$auth_sec_servers | string | undef | sec servers
-$auth_server | string  | undef | Enable auth server mode
-$auth_ttl | string | undef | Override TTL value of auth server
-$auth_zone | string | undef | DNS zone for auth mode
-$bogus_priv | boolean | true | Bogus private reverse lookups
-$cache_size | boolean | 1000 | Size of dns cache
-$config_hash | array | undef | puppet config hash
-$dhcp_boot | bool | true | Enable tftp booting
-$dhcp_leasefile | boolean | true | DHCP leases file location
-$dhcp_no_override | boolean | false | Disable re-use of the DHCP servername
-$domain | string | undef | Network domain
-$domain_needed | boolean | false | Do not forward A/AAAA without domain part
-$dns_forward_max | string | undef | maximum number of concurrent DNS queries
-$enable_tftp | boolean | undef | TFTP boot support
-$expand_hosts | bool | true | Add the domain to simple names
-$interface | string/array | undef | Listening interface
-$listen_address | string | undef | Listening IP address
-$local_ttl | string | undef | Local time to live
-$max_ttl | string | undef | Maximum time to live
-$max_cache_ttl | string | undef | Maximum TTL for entries in cache
-$neg_ttl | string | undef | Negative cache timeout
-$no_dhcp_interface | string/array | undef | Do not use DHCP on interface
-$no_hosts | boolean | false | Ignore /etc/hosts file
-$no_negcache | boolean | false | Do not cache negative responses
-$no_resolv | boolean | false | Ignore resolv.conf file
-$port | string | 53 | Listening port
-$read_ethers | boolean | false | Read /etc/ethers for information about hosts
-$reload_resolvconf | boolean | true | Update resolvconf on changes
-$resolv_file | boolean | false | Location of resolv.conf file
-$restart | boolean | true | Restart on config change
-$run_as_user | string | undef | force dnsmasq under specific user
-$save_config_file | boolean | true | Backup original config file
-$service_enable | boolean | true | Start dnsmasq at boot
-$service_ensure | string | running | Ensure service state
-$strict_order | boolean | true | Use DNS servers order of resolv.conf
-$tftp_root | string | /var/lib/tftpboot | Location of tftp boot files
-
+$auth_sec_servers | String | undef | sec servers
+$auth_server | String  | undef | Enable auth server mode
+$auth_ttl | String | undef | Override TTL value of auth server
+$auth_zone | String | undef | DNS zone for auth mode
+$bogus_priv | Boolean | true | Bogus private reverse lookups
+$cache_size | Boolean | 1000 | Size of dns cache
+$config_hash | Array | undef | puppet config hash
+$dhcp_boot | Boolean | true | Enable tftp booting
+$dhcp_leasefile | Boolean | true | DHCP leases file location
+$dhcp_no_override | Boolean | false | Disable re-use of the DHCP servername
+$domain | String | undef | Network domain
+$domain_needed | Boolean | false | Do not forward A/AAAA without domain part
+$dns_forward_max | String | undef | maximum number of concurrent DNS queries
+$enable_tftp | Boolean | undef | TFTP boot support
+$expand_hosts | Boolean | true | Add the domain to simple names
+$interface | String/Array | undef | Listening interface
+$listen_address | String | undef | Listening IP address
+$local_ttl | String | undef | Local time to live
+$max_ttl | String | undef | Maximum time to live
+$max_cache_ttl | String | undef | Maximum TTL for entries in cache
+$neg_ttl | String | undef | Negative cache timeout
+$no_dhcp_interface | String/Array | undef | Do not use DHCP on interface
+$no_hosts | Boolean | false | Ignore /etc/hosts file
+$no_negcache | Boolean | false | Do not cache negative responses
+$no_resolv | Boolean | false | Ignore resolv.conf file
+$port | String | 53 | Listening port
+$read_ethers | Boolean | false | Read /etc/ethers for information about hosts
+$reload_resolvconf | Boolean | true | Update resolvconf on changes
+$resolv_file | Boolean | false | Location of resolv.conf file
+$restart | Boolean | true | Restart on config change
+$run_as_user | String | undef | force dnsmasq under specific user
+$save_config_file | Boolean | true | Backup original config file
+$service_enable | Boolean | true | Start dnsmasq at boot
+$service_ensure | String | running | Ensure service state
+$strict_order | Boolean | true | Use DNS servers order of resolv.conf
+$tftp_root | String | /var/lib/tftpboot | Location of tftp boot files
 
 There is also optional variables to override system-provided paths and names:
 
 Variable      | Type          | Desc
 ------------- | ------------- | --------
-$dnsmasq_confdir | string | Configuration directory location
-$dnsmasq_conffile | string | Configuration file location
-$dnsmasq_hasstatus | string | init.d status support
-$dnsmasq_logdir | string | dnsmasq log directory
-$dnsmasq_package | string | dnsmasq package name
-$dnsmasq_package_provider | string | package system provider
-$dnsmasq_service | string | Name of init.d service
+$dnsmasq_confdir | String | Configuration directory location
+$dnsmasq_conffile | String | Configuration file location
+$dnsmasq_hasstatus | String | init.d status support
+$dnsmasq_logdir | String | dnsmasq log directory
+$dnsmasq_package | String | dnsmasq package name
+$dnsmasq_package_provider | String | package system provider
+$dnsmasq_service | String | Name of init.d service
 
 ### DHCP server configuration
 
@@ -120,8 +129,8 @@ Parameter "mode" is optional, please refer to dnsmasq man to see possible settin
 
 ```puppet
 dnsmasq::dhcp { 'my-awesome-subnet':
-  set        => 'hadoop0' #optional
-  mode       => 'static' #optional
+  set        => 'hadoop0' # optional
+  mode       => 'static' # optional
   dhcp_start => '192.168.1.100',
   dhcp_end   => '192.168.1.200',
   netmask    => '255.255.255.0',
@@ -135,7 +144,7 @@ Will add static DHCP record to DHCP server with hostname.
 Please be aware that example-host will also be used as DNS name.
 
 ```puppet
-dnsmasq::dhcpstatic { 'example-host':
+dnsmasq::config::dhcp_host { 'example-host':
   mac => 'DE:AD:BE:EF:CA:FE',
   ip  => '192.168.1.10',
 }
@@ -148,7 +157,7 @@ DHCP match will be inserted before 'DHCP option'.
 It can be used multiple times.
 
 ```puppet
-dnsmasq::dhcpmatch {'example-match':
+dnsmasq::config::dhcp_match {'example-match':
   content: 'IPXEBOOT,175'
 }
 ```
@@ -158,9 +167,15 @@ dnsmasq::dhcpmatch {'example-match':
 Will add static A, AAAA (if provided) and PTR record
 
 ```puppet
-dnsmasq::hostrecord { "example-host-dns,example-host-dns.int.lan":
-  ip   => '192.168.1.20',
-  ipv6 => 'FE80:0000:0000:0000:0202:B3FF:FE1E:8329' #optional
+dnsmasq::config::host_record { 'example-host-dns.int.lan':
+  ipaddr => '192.168.1.20',
+}
+```
+A more complex example would be:
+```puppet
+dnsmasq::config::host_record { 'example-host-dns.int.lan':
+  host_record => ['example-host-dns', 'example-host-dns.int.lan'],
+  ipaddr      => ['192.168.1.20', 'fe80:0000:0000:0000:0202:b3ff:fe1e:8329'],
 }
 ```
 
@@ -169,7 +184,7 @@ dnsmasq::hostrecord { "example-host-dns,example-host-dns.int.lan":
 Will add static A record, this record will always override upstream data
 
 ```puppet
-dnsmasq::address { "example-host-dns.int.lan":
+dnsmasq::config::address { 'example-host-dns.int.lan':
   ip => '192.168.1.20',
 }
 ```
@@ -180,8 +195,8 @@ Please note that dnsmasq cname is NOT regular cname and can be only for targets
 which are names from DHCP leases or /etc/hosts, so it's more like alias for hostname
 
 ```puppet
-dnsmasq::cname { "mail":
-  hostname => "post"
+dnsmasq::config::cname { 'mail':
+  hostname => 'post',
 }
 ```
 
@@ -190,20 +205,20 @@ Will add srv record which always overrides upstream data.
 Priority argument is optional.
 
 ```puppet
-dnsmasq::srv { "_ldap._tcp.example.com":
-  hostname => "ldap-server.example.com",
-  port     => "389",
-  priority => "1",
+dnsmasq::config::srv_host { '_ldap._tcp.example.com':
+  target   => 'ldap-server.example.com',
+  port     => 389,
+  priority => 1,
 }
 ```
 
 ### MX records
-Will create MX (mail eXchange) record which always override upstream data
+Will create MX (*M*ail e*X*change) record which always override upstream data
 
 ```puppet
-dnsmasq::mx { "maildomain.com":
-  hostname   => "mailserver.com",
-  preference => "50",
+dnsmasq::config::mx_host { 'maildomain.com':
+  hostname   => 'mailserver.com',
+  preference => 50,
 }
 ```
 
@@ -211,7 +226,7 @@ dnsmasq::mx { "maildomain.com":
 Allows you to create PTR records for rDNS and DNS-SD.
 
 ```puppet
-dnsmasq::ptr { "_http._tcp.dns-sd-services":
+dnsmasq::config::ptr_record { '_http._tcp.dns-sd-services':
   value => '"New Employee Page._http._tcp.dns-sd-services"'
 }
 ```
@@ -220,11 +235,10 @@ dnsmasq::ptr { "_http._tcp.dns-sd-services":
 Allows you to create TXT records
 
 ```puppet
-dnsmasq::txt { "_http._tcp.example.com":
-  value => "name=value,paper=A4"
+dnsmasq::config::txt_record { '_http._tcp.example.com':
+  text => ['name=value','paper=A4'],
 }
 ```
-(this actually should be done via array, will fix later)
 
 ### DHCP option configuration
 
@@ -237,10 +251,10 @@ Will add dhcp option. Can be used for all types of options, ie:
 Can be used multiple times.
 
 ```puppet
-dnsmasq::dhcpoption { 'my-awesome-dhcp-option':
+dnsmasq::config::dhcp_option { 'my-awesome-dhcp-option':
   option  => 'option:router'
   content => '192.168.1.1',
-  tag     => 'sometag', #optional
+  tag     => 'sometag', # optional
 }
 ```
 
@@ -252,11 +266,11 @@ using tag you previously specified in dnsmasq::dhcp
 Can be used multiple times.
 
 ```puppet
-dnsmasq::dhcpboot { 'hadoop-pxe':
-  tag        => 'hadoop0', #optional
+dnsmasq::config::dhcp_boot { 'hadoop-pxe':
+  tag        => 'hadoop0',     # optional
   file       => 'pxelinux.0',
-  hostname   => 'newoffice', #optional
-  bootserver => '192.168.39.1' #optional
+  hostname   => 'newoffice',   # optional
+  bootserver => '192.168.39.1' # optional
 }
 ```
 
@@ -266,7 +280,7 @@ Allows you to specify different domain for specific subnets.
 Can be used multiple times.
 
 ```puppet
-dnsmasq::domain { 'guests.company.lan':
+dnsmasq::config::domain { 'guests.company.lan':
   subnet => '192.168.196.0/24',
 }
 ```
@@ -274,24 +288,22 @@ dnsmasq::domain { 'guests.company.lan':
 ### DNS server
 Configure the DNS server to query external DNS servers
 ```puppet
-dnsmasq::dnsserver { 'dns':
-  ip => '192.168.1.1',
+dnsmasq::config::server { ['8.8.8.8','8.8.4.4']:
 }
 ```
 
 Or, to query specific zone
 ```puppet
-dnsmasq::dnsserver { 'forward-zone':
-  domain => "dumb.domain.tld",
-  ip     => "192.168.39.1",
-  port   => '9001', #optional
+dnsmasq::config::server { '192.168.39.1':
+  domain => ['foo.example.com','bar.example.com'],
+  port   => 9001, # optional
 }
 ```
 
 ### DNS-RR records
 Allows dnsmasq to serve arbitrary records, for example:
 ```puppet
-dnsmasq::dnsrr { 'example-sshfp':
+dnsmasq::config::dns_rr { 'example-sshfp':
     domain => 'example.com',
     type   => '44',
     rdata  => '2:1:123456789abcdef67890123456789abcdef67890'
@@ -304,7 +316,7 @@ When running in a Docker container, dnsmasq tries to drop root privileges. This 
 dnsmasq: setting capabilities failed: Operation not permitted
 ```
 
-In this case you can use the run\_as\_user to provide the appropriate user to run as:
+In this case you can use the run\_as\_user parameter to select the appropriate user to run as:
 ```puppet
 class { 'dnsmasq':
   interface         => 'lo',

@@ -5,6 +5,10 @@ class dnsmasq::config {
   if $caller_module_name != $module_name {
     fail("Use of private class ${name} by ${caller_module_name}")
   }
+  if $::kernel != 'Linux'
+  and ($dnsmasq::firewall_ipv4_manage or $dnsmasq::firewall_ipv6_manage) {
+    fail("${::kernel} is unsupported by ${module_name}")
+  }
 
   ## CLASS VARIABLES
 
@@ -38,6 +42,7 @@ class dnsmasq::config {
   $config_hash = delete_undef_values({
     'add-cpe-id'            => $dnsmasq::add_cpe_id,
     'add-mac'               => $dnsmasq::add_mac,
+    'add-subnet'            => $dnsmasq::add_subnet,
     'addn-hosts'            => $dnsmasq::addn_hosts,
     'all-servers'           => $dnsmasq::all_servers,
     'auth-peer'             => $dnsmasq::auth_peer,
@@ -170,6 +175,15 @@ class dnsmasq::config {
 
   ## MANAGED RESOURCES
 
+  # DHCP's firewall hole is called in Puppet Defined Type
+  # dnsmasq::config::dhcp_range, since --dhcp-range is the parameter
+  # that specifically enables the DHCP service within dnsmasq.
+  #
+  # For DNS and TFTP, we if they are enabled, and conditionally call
+  # firewall rules for them in these classes.
+  contain 'dnsmasq::firewall_dns'
+  contain 'dnsmasq::firewall_tftp'
+
   file {
     $dnsmasq::dnsmasq_conf_dir :
       ensure       => 'directory',
@@ -232,10 +246,10 @@ class dnsmasq::config {
 
   # Create resources from specificied Hashs
   create_resources('dnsmasq::config::address', $dnsmasq::addresses)
-  create_resources('dnsmasq::config::add_subnet', $dnsmasq::add_subnets)
   create_resources('dnsmasq::config::alias', $dnsmasq::aliases)
   create_resources('dnsmasq::config::cname', $dnsmasq::cnames)
   create_resources('dnsmasq::config::conf_dir', $dnsmasq::conf_dirs)
+  create_resources('dnsmasq::config::conf_file', $dnsmasq::conf_files)
   create_resources('dnsmasq::config::dhcp_boot', $dnsmasq::dhcp_boots)
   create_resources('dnsmasq::config::dhcp_host', $dnsmasq::dhcp_hosts)
   create_resources('dnsmasq::config::dhcp_match', $dnsmasq::dhcp_matches)
